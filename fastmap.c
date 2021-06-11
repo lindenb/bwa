@@ -156,7 +156,7 @@ int main_mem(int argc, char *argv[])
 
 	aux.opt = opt = mem_opt_init();
 	memset(&opt0, 0, sizeof(mem_opt_t));
-	while ((c = getopt(argc, argv, "51qpaMCSPVYjuk:c:v:s:r:t:R:A:B:O:E:U:w:L:d:T:Q:D:m:I:N:o:f:W:x:G:h:y:K:X:H:F:")) >= 0) {
+	while ((c = getopt(argc, argv, "51qpaMCSPVYjuk:c:v:s:r:t:R:A:B:O:E:U:w:L:d:T:Q:D:m:I:N:o:f:W:x:G:h:y:K:X:H:F:0:")) >= 0) {
 		if (c == 'k') opt->min_seed_len = atoi(optarg), opt0.min_seed_len = 1;
 		else if (c == '1') no_mt_io = 1;
 		else if (c == 'x') mode = optarg;
@@ -253,6 +253,24 @@ int main_mem(int argc, char *argv[])
 			if (bwa_verbose >= 3)
 				fprintf(stderr, "[M::%s] mean insert size: %.3f, stddev: %.3f, max: %d, min: %d\n",
 						__func__, pes[1].avg, pes[1].std, pes[1].high, pes[1].low);
+		} else if(c=='0') { //modulo fastqs
+			long n1 = -1;
+			long n2 = -1;
+			char* p = strch(optarg,'/');
+			if(p!=NULL) {
+				*p=0;
+				n1 = atoi(optarg);
+				n2 = atoi(p+1);
+				
+				}
+			if(n1 <= n2 && n1 > 0L {
+				n1--;
+				}
+			else
+				{
+				fprintf(stderr,"Bad value for option -0\n");
+				return EXIT_FAILURE;
+				}
 		}
 		else return 1;
 	}

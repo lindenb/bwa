@@ -148,8 +148,9 @@ static bwa_seq_t *bwa_read_bam(bwa_seqio_t *bs, int n_needed, int *n, int is_com
 
 #define BARCODE_LOW_QUAL 13
 
-bwa_seq_t *bwa_read_seq(bwa_seqio_t *bs, int n_needed, int *n, int mode, int trim_qual)
+bwa_seq_t *bwa_read_seq(bwa_seqio_t *bs, int n_needed, int *n, int mode, int trim_qual,long modulo_expect,long modulo)
 {
+	long n_kseq = -1L;
 	bwa_seq_t *seqs, *p;
 	kseq_t *seq = bs->ks;
 	int n_seqs, l, i, is_comp = mode&BWA_MODE_COMPREAD, is_64 = mode&BWA_MODE_IL13, l_bc = mode>>24;
@@ -163,6 +164,8 @@ bwa_seq_t *bwa_read_seq(bwa_seqio_t *bs, int n_needed, int *n, int mode, int tri
 	n_seqs = 0;
 	seqs = (bwa_seq_t*)calloc(n_needed, sizeof(bwa_seq_t));
 	while ((l = kseq_read(seq)) >= 0) {
+		n_kseq++;
+		if(n_kseq % modulo != modulo_expect ) continue;
 		if ((mode & BWA_MODE_CFY) && (seq->comment.l != 0)) {
 			// skip reads that are marked to be filtered by Casava
 			char *s = index(seq->comment.s, ':');
@@ -205,7 +208,7 @@ bwa_seq_t *bwa_read_seq(bwa_seqio_t *bs, int n_needed, int *n, int mode, int tri
 		seq_reverse(p->len, p->rseq, is_comp);
 		p->name = strdup((const char*)seq->name.s);
 		{ // trim /[12]$
-			int t = strlen(p->name);
+			int t = seq->name.l;
 			if (t > 2 && p->name[t-2] == '/' && (p->name[t-1] == '1' || p->name[t-1] == '2')) p->name[t-2] = '\0';
 		}
 		if (n_seqs == n_needed) break;
