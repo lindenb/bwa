@@ -745,7 +745,11 @@ void bsw2_aln(const bsw2opt_t *opt, const bntseq_t *bns, bwt_t * const target, c
 		ks2 = kseq_init(fp2);
 		is_pe = 1;
 	} else fp2 = 0, ks2 = 0, is_pe = 0;
-	while ((bseq = bseq_read(opt->chunk_size * opt->n_threads, &n, ks, ks2)) != 0) {
+	while ((bseq = bseq_read(opt->chunk_size * opt->n_threads, &n, ks, ks2
+		#ifdef WITH_MODULO
+		,NULL
+		#endif
+		)) != 0) {
 		int size = 0;
 		if (n > _seq->max) {
 			_seq->max = n;

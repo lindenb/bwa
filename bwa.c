@@ -76,7 +76,11 @@ static inline void kseq2bseq1(const kseq_t *ks, bseq1_t *s)
 	s->l_seq = ks->seq.l;
 }
 
-bseq1_t *bseq_read(int chunk_size, int *n_, void *ks1_, void *ks2_)
+bseq1_t *bseq_read(int chunk_size, int *n_, void *ks1_, void *ks2_,
+	#ifdef WITH_MODULO
+	modulo_t* modulo
+	#endif
+	)
 {
 	kseq_t *ks = (kseq_t*)ks1_, *ks2 = (kseq_t*)ks2_;
 	int size = 0, m, n;
@@ -87,6 +91,20 @@ bseq1_t *bseq_read(int chunk_size, int *n_, void *ks1_, void *ks2_)
 			fprintf(stderr, "[W::%s] the 2nd file has fewer sequences.\n", __func__);
 			break;
 		}
+		#ifdef WITH_MODULO
+		WHERE;
+		modulo->total++;
+		if(modulo->total % modulo->mod != modulo->every) {
+			WHERE;
+			fprintf(stderr,"DISCARD!\n");
+			continue;
+			}
+		else
+			{
+			fprintf(stderr,"ACCEPT\n");
+			WHERE;
+			}
+		#endif
 		if (n >= m) {
 			m = m? m<<1 : 256;
 			seqs = realloc(seqs, m * sizeof(bseq1_t));

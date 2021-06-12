@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include "bwt.h"
 
+
 #define BWA_TYPE_NO_MATCH 0
 #define BWA_TYPE_UNIQUE 1
 #define BWA_TYPE_REPEAT 2

@@ -148,7 +148,7 @@ static bwa_seq_t *bwa_read_bam(bwa_seqio_t *bs, int n_needed, int *n, int is_com
 
 #define BARCODE_LOW_QUAL 13
 
-bwa_seq_t *bwa_read_seq(bwa_seqio_t *bs, int n_needed, int *n, int mode, int trim_qual,long modulo_expect,long modulo)
+bwa_seq_t *bwa_read_seq(bwa_seqio_t *bs, int n_needed, int *n, int mode, int trim_qual)
 {
 	long n_kseq = -1L;
 	bwa_seq_t *seqs, *p;
@@ -165,7 +165,6 @@ bwa_seq_t *bwa_read_seq(bwa_seqio_t *bs, int n_needed, int *n, int mode, int tri
 	seqs = (bwa_seq_t*)calloc(n_needed, sizeof(bwa_seq_t));
 	while ((l = kseq_read(seq)) >= 0) {
 		n_kseq++;
-		if(n_kseq % modulo != modulo_expect ) continue;
 		if ((mode & BWA_MODE_CFY) && (seq->comment.l != 0)) {
 			// skip reads that are marked to be filtered by Casava
 			char *s = index(seq->comment.s, ':');

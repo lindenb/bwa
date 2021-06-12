@@ -269,7 +269,11 @@ int main_pemerge(int argc, char *argv[])
 	}
 
 	memset(cnt, 0, 8 * (MAX_ERR+1));
-	while ((bseq = bseq_read(opt->n_threads * opt->chunk_size, &n, ks, ks2)) != 0) {
+	while ((bseq = bseq_read(opt->n_threads * opt->chunk_size, &n, ks, ks2
+		#ifdef WITH_MODULO
+		,NULL
+		#endif
+		)) != 0) {
 		process_seqs(opt, n, bseq, cnt);
 		free(bseq);
 	}

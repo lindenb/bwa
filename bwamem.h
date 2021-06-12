@@ -49,6 +49,11 @@ typedef struct __smem_i smem_i;
 #define MEM_F_KEEP_SUPP_MAPQ 0x1000
 #define MEM_F_XB        0x2000
 
+
+#ifdef WITH_MODULO
+#include "modulo.h"
+#endif
+
 typedef struct {
 	int a, b;               // match score and mismatch penalty
 	int o_del, e_del;
@@ -81,6 +86,7 @@ typedef struct {
 	int max_matesw;         // perform maximally max_matesw rounds of mate-SW for each end
 	int max_XA_hits, max_XA_hits_alt; // if there are max_hits or fewer, output them all
 	int8_t mat[25];         // scoring matrix; mat[0] == 0 if unset
+	modulo_t modulo;
 } mem_opt_t;
 
 typedef struct {
